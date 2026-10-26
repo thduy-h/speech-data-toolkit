@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --extra dev --python ${{ matrix.python-version }}
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - run: uv run mypy src
+      - run: uv run pytest --cov=speech_data_toolkit --cov-report=term-missing
+      - run: uv build
+      - run: |
+          python -m venv /tmp/speechprep-smoke
+          /tmp/speechprep-smoke/bin/pip install dist/*.whl
+          /tmp/speechprep-smoke/bin/speechprep --help
+          uv run python examples/make_demo.py "$RUNNER_TEMP/demo-audio"
+          /tmp/speechprep-smoke/bin/speechprep init --output "$RUNNER_TEMP/config.yaml"
+          /tmp/speechprep-smoke/bin/speechprep process \
+            "$RUNNER_TEMP/demo-audio" \
+            --config "$RUNNER_TEMP/config.yaml" \
+            --output "$RUNNER_TEMP/processed"
+          test -f "$RUNNER_TEMP/processed/manifest.jsonl"
+          test -f "$RUNNER_TEMP/processed/speaker_01/utterance.wav"
