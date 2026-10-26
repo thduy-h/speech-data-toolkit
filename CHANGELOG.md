@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-27)
 
 - Initial CPU-first package and `speechprep` CLI.
 - WAV/FLAC scanning, validation, resampling, channel conversion, normalization, energy trimming and segmentation.
