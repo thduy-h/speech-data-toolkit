@@ -13,12 +13,21 @@ A reproducible, CPU-first audio preprocessing library and CLI for speech researc
 
 ## Installation
 
-Python 3.11 or newer on Linux; CI currently checks 3.11. `uv sync --extra dev` installs development dependencies. For a wheel install, run `uv build` then `pip install dist/speech_data_toolkit-0.1.0-py3-none-any.whl`. The CLI entry point is `speechprep`.
+Python 3.11 or newer on Linux; CI currently checks 3.11. Install from a repository checkout with `pip` in a virtual environment:
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+speechprep --help
+```
+
+Alternatively, run `uv sync` and use `uv run speechprep`. Contributors can use `uv sync --extra dev` for the test and lint tools. To install a built wheel, run `uv build` followed by `python -m pip install dist/speech_data_toolkit-0.1.0-py3-none-any.whl`. The package has not been published to PyPI.
 
 ## Quick start
 
 ```bash
-uv sync --extra dev
+uv sync
 uv run speechprep init --output config.yaml
 uv run python examples/make_demo.py demo-audio
 uv run speechprep scan demo-audio --output scan.jsonl
